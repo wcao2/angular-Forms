@@ -1,1 +1,79 @@
-<button class="btn btn-primary">Submit</button>
+<div class="container">
+
+  <app-test></app-test>
+  <!-- anytime use form tag, angular attach ngForm directive to the form tag 
+    how do we get a reference to this ngForm directive? use template reference variable.
+    directives give us access to the values of the form controls-->
+  
+  <!-- in order to retrieve form control values, making use of ngForm and ngModel directives
+     input values correspond to the text input;select tag correspond to value attr if present;
+     radio button corresponds to the value attr; checkbox corresponds to either true of false -->
+  <form #uform="ngForm">
+
+    {{uform.value| json}} 
+    <hr/>
+    {{userModel | json}}
+    <hr/>
+    <!-- ngForm provides overall form validation, this can be used to disabled submit button until form is valid -->
+    {{uform.form.valid}}
+    <hr/>
+    <div class="form-group">
+      <label>Name</label>
+      <!-- bind the property of the model to the ngModel
+       [] for property bind: one way db, data flows only from the class to the view -->
+      
+       <!-- reference var name points to the ngModel of this particular form control -->
+       <!-- class binding,is-invalid is class name,check the invalid property -->
+      <input type="text" required #name="ngModel" [class.is-invalid]="name.invalid && name.touched" class="form-control" name="username" [(ngModel)]="userModel.name">
+    
+       <!--add temp ref var to bind the input className property,all these classes can be used to provide visual feedback -->
+       <!-- {{name.className}} #name only -->
+       {{name.untouched}}
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" class="form-control" name="useremail" [(ngModel)]="userModel.email">
+    </div>
+
+    <div class="form-group">
+      <label>Phone</label>
+      <input type="tel" #phone="ngModel" pattern="^\d{10}$" 
+        [class.is-invalid]="phone.invalid && phone.touched" class="form-control" name="userphone" [(ngModel)]="userModel.phone">
+    </div>
+
+    <div class="form-group">
+      <select [(ngModel)]="userModel.topic" name="usertopic">
+         <option selected>I am interested in</option>
+         <option *ngFor="let topic of topics">{{topic}}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Time preference</label>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="timePreference" value="morning" [(ngModel)]="userModel.time">
+        <label class="form-check-label">Morning (9AM - 12PM)</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="timePreference" value="evening" [(ngModel)]="userModel.time">
+        <label class="form-check-label">Evening (5PM - 8PM)</label>
+      </div>
+    </div>
+
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox"   name="userstuff" [(ngModel)]="userModel.stuff">
+      <label class="form-check-label">
+        Send me sth
+      </label>
+    </div>
+
+    <!-- add the disabled property and bind it to the invalid state of the form -->
+    <button  [disabled]="uform.form.invalid" class="btn btn-primary" type="submit">Submit form</button>
+    <!-- form validation and providing appropriate visual feedback is very important
+         Angular helps us with form validation by tracking the state of the form controls and applying the appropriate classes.
+    for each of the classes, angular provides an Associated property on the ngModel directive.
+    properties return boolean value which is much more easier to work with than class names.
+ -->
+  </form>
+</div>
